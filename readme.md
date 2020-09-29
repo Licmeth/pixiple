@@ -49,5 +49,5 @@ File metadata (name, size, date, format) is ignored when detecting similarity. B
 - Install Visual Studio Code
 - Install the C/C++ extension for VS Code
 - Install the Microsoft Visual C++ (MSVC) compiler toolset [(see details here)](https://code.visualstudio.com/docs/cpp/config-msvc)
-- Clone [DirectXMath](https://github.com/microsoft/DirectXMath)
-- Adjust pathes in ``.vscode/c_cpp_properties.json``
+- Adjust path in ``.vscode/c_cpp_properties.json``
+- Make sure you start VS Code via the Developer Power Shell by calling ``code .`` from the pixiple repository directory 
