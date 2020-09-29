@@ -2,43 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "C/C++: g++.exe build active file",
-            "type": "shell",
-            "command": "g++.exe",
-            "args": [
-                "-g", "${file}",
-                "-I", "${workspaceFolder}\\..\\DirectXMath\\Inc",
-                "-o", "${workspaceFolder}\\bin\\${fileBasenameNoExtension}.exe"],
-            "options": {
-                "cwd": "${workspaceFolder}"
-              },
-            "group": "build",
-            "problemMatcher": "$gcc"
-        },
-        {
-            "label": "C/C++: cl.exe build project",
-            "type": "shell",
-            "command": "cl.exe",
-            "args": [
-              "/Zi",
-              "/EHsc",
-              "/std:c++17",
-              "/DUNICODE",
-              "/D_UNICODE",
-              "/I",
-              "${workspaceFolder}\\..\\DirectXMath",
-              "/I",
-              "${workspaceFolder}\\..\\boost_1_74_0\\boost",
-              "/I",
-              "${workspaceFolder}\\..\\boost_1_74_0\\lib",
-              "/Fe:",
-              "${fileDirname}\\${fileBasenameNoExtension}.exe",
-              "./src/*.cpp"
-            ],
-            "problemMatcher": ["$msCompile"],
-            "group": "build",
-        },
-        {
             "label": "cl.exe",
             "type": "shell",
             "command": "cl.exe",
@@ -61,23 +24,5 @@
               "kind": "build",
               "isDefault": true
           },
-        },
-        {
-            "label": "compile",
-            "command": "cmd",
-            "type": "process",
-            "args": [
-                "/C %vcvarsall% && cl /Od /Zi /EHsc /std:c++17 /DUNICODE /D_UNICODE /Fd:%outpath%/vc141.pdb /Fo:%outpath%/%TargetName%.obj ./src/main.cpp /link /OUT:%outpath%/%TargetName%.%TargetExt% /PDB:%outpath%/%TargetName%.pdb",
-            ],
-            "group": "build",
         }
-    ],
-    "options": {
-        "env": {
-            "outpath": "bin", // must exist before running
-            "TargetName": "main",
-            "TargetExt": "exe",
-            "vcvarsall": "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build\\vcvarsall.bat\" x64",
-        }
-    }
 }

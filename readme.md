@@ -1,6 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/ctf2wj6im4d05c0s?svg=true)](https://ci.appveyor.com/project/olaolsso/pixiple)
-
-# Pixiple
+# Pixiple(Fork)
 
 ## What's Pixiple?
 
@@ -45,3 +43,11 @@ Pixiple will easily detect images that are identical, have identical pixel conte
 Pixiple is less well able to detect similar images with significant changes to pixel content (cropping or change of brightness, contrast, saturation, etc).
 
 File metadata (name, size, date, format) is ignored when detecting similarity. By default, image paths are also ignored.
+
+## How to build
+
+- Install Visual Studio Code
+- Install the C/C++ extension for VS Code
+- Install the Microsoft Visual C++ (MSVC) compiler toolset [(see details here)](https://code.visualstudio.com/docs/cpp/config-msvc)
+- Clone [DirectXMath](https://github.com/microsoft/DirectXMath)
+- Adjust pathes in ``.vscode/c_cpp_properties.json``
