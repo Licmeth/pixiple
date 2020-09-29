@@ -34,9 +34,17 @@ bool ImagePair::is_in_same_folder() const {
 	return image_1->path().parent_path() == image_2->path().parent_path();
 }
 
+template <typename TP>
+std::chrono::system_clock::time_point conv_to_time_point(TP tp)
+{
+    using namespace std::chrono;
+    return time_point_cast<system_clock::duration>(tp - TP::clock::now()
+              + system_clock::now());
+}
+
 std::chrono::system_clock::duration ImagePair::get_age() const {
 	auto now = std::chrono::system_clock::now();
-	return std::min(now - image_1->file_time(), now - image_2->file_time());
+	return std::min(now - conv_to_time_point(image_1->file_time()), now - conv_to_time_point(image_2->file_time()));
 }
 
 std::chrono::system_clock::duration ImagePair::time_distance() const {

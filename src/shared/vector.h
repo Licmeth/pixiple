@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <ostream>
 
 #include <d2d1.h>
 #include <DirectXMath.h>

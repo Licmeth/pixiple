@@ -31,7 +31,7 @@ Image::Image(const std::filesystem::path& path) : path_{path} {
 
 	std::error_code ec;
 	// TODO: remove experimental workaround
-	file_time_ = std::experimental::filesystem::last_write_time(std::experimental::filesystem::path(path.native()), ec);
+	file_time_ = std::filesystem::last_write_time(std::filesystem::path(path.native()), ec);
 
 	std::vector<std::uint8_t> data(numeric_cast<std::size_t>(file_size()));
 	
@@ -60,7 +60,7 @@ std::uintmax_t Image::file_size() const {
 		return s;
 }
 
-std::experimental::filesystem::file_time_type Image::file_time() const {
+std::filesystem::file_time_type Image::file_time() const {
 	return file_time_;
 }
 

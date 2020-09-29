@@ -73,7 +73,8 @@ static void app() {
 
 	Window window{
 		window_title, {800, 600},
-		er = LoadIcon(er = GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON))};
+		//er = LoadIcon(er = GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON))};
+		er = (HICON) LoadImage(NULL, L"icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE)};
 
 	std::vector<ComPtr<IShellItem>> items;
 	for (const auto& a : get_command_line_args()) {

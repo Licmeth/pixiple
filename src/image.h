@@ -37,7 +37,7 @@ public:
 
 	std::filesystem::path path() const;
 	std::uintmax_t file_size() const;
-	std::experimental::filesystem::file_time_type file_time() const;
+	std::filesystem::file_time_type file_time() const;
 
 	std::vector<std::chrono::system_clock::time_point> get_metadata_times() const;
 	std::wstring get_metadata_make_model() const;
@@ -79,7 +79,7 @@ private:
 	Status status = Status::ok;
 
 	std::filesystem::path path_;
-	std::experimental::filesystem::file_time_type file_time_;
+	std::filesystem::file_time_type file_time_;
 
 	Size2u image_size{0, 0};
 

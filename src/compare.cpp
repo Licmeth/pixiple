@@ -146,6 +146,15 @@ std::size_t get_matching_text_length(const std::wstring& text1, const std::wstri
 	return i;
 }
 
+template <typename TP>
+std::time_t conv_to_time_t(TP tp)
+{
+    using namespace std::chrono;
+    auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
+              + system_clock::now());
+    return system_clock::to_time_t(sctp);
+}
+
 void update_text_image_info(
 	Window& window,
 	const std::shared_ptr<const Image>& image,
@@ -181,7 +190,7 @@ void update_text_image_info(
 		bold_ranges.push_back({index, ss.str().length() - index});
 	index = ss.str().length();
 
-	ss << image->file_time() << L", ";
+	ss << conv_to_time_t(image->file_time()) << L", ";
 	if (image->file_time() == image_other->file_time())
 		bold_ranges.push_back({index, ss.str().length() - index});
 	index = ss.str().length();
