@@ -176,7 +176,7 @@ bool Image::is_deletable() const {
 	return h != INVALID_HANDLE_VALUE;
 }
 
-void Image::delete_file() const {
+void Image::delete_file(const bool moveToRecycleBin) const {
 	if (path_.empty())
 		return;
 
@@ -190,7 +190,11 @@ void Image::delete_file() const {
 	ComPtr<IFileOperation> fo;
 	er = CoCreateInstance(CLSID_FileOperation, nullptr, CLSCTX_ALL, IID_PPV_ARGS(&fo));
 
-	er = fo->SetOperationFlags(FOF_ALLOWUNDO | FOF_FILESONLY | FOF_NORECURSION);
+	if(moveToRecycleBin)
+		er = fo->SetOperationFlags(FOF_ALLOWUNDO | FOF_FILESONLY | FOF_NORECURSION | FOFX_RECYCLEONDELETE | FOF_NOCONFIRMATION | FOF_SILENT);
+	else
+		er = fo->SetOperationFlags(FOF_FILESONLY | FOF_NORECURSION | FOF_NOCONFIRMATION | FOF_SILENT);
+
 	er = fo->DeleteItem(file, nullptr);
 
 	hr = fo->PerformOperations();

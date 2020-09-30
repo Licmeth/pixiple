@@ -54,7 +54,7 @@ public:
 	void draw(ID2D1HwndRenderTarget* const render_target, const D2D1_RECT_F& rect_dest, const D2D1_RECT_F& rect_src, const D2D1_BITMAP_INTERPOLATION_MODE& interpolation_mode) const;
 
 	bool is_deletable() const;
-	void delete_file() const;
+	void delete_file(const bool moveToRecycleBin) const;
 	void open_folder() const;
 
 	friend std::tuple<float, bool, bool> distance(const Image& image_1, const Image& image_2, const float maximum_distance);

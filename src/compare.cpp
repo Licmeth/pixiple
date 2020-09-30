@@ -363,11 +363,12 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 		button_scoring_visual, button_scoring_time, button_scoring_location, button_scoring_combined,
 		button_filters_folder_any, button_filters_folder_different, button_filters_folder_same,
 		button_filters_age_any, button_filters_age_year, button_filters_age_month, button_filters_age_week, button_filters_age_day,
+		button_settings_delete_recycle_bin, button_settings_delete_irreversibly,
 		button_help_website, button_help_license
 	};
 
 	enum {
-		checkmark_group_scoring, checkmark_group_folder, checkmark_group_age
+		checkmark_group_scoring, checkmark_group_folder, checkmark_group_age, checkmark_group_deletion
 	};
 
 	// panes
@@ -440,18 +441,22 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 	window.add_menu_item(L"Combined", button_scoring_combined, checkmark_group_scoring);
 	window.pop_menu_level();
 
-	window.push_menu_level(L"Filters");
-	window.push_menu_level(L"Folder restrictions");
+	window.push_menu_level(L"Settings");
+	window.push_menu_level(L"Folder restrictions filter");
 	window.add_menu_item(L"Images in a pair can be anywhere", button_filters_folder_any, checkmark_group_folder);
 	window.add_menu_item(L"Images in a pair must be in different folders", button_filters_folder_different, checkmark_group_folder);
 	window.add_menu_item(L"Images in a pair must be in the same folder", button_filters_folder_same, checkmark_group_folder);
 	window.pop_menu_level();
-	window.push_menu_level(L"Maximum pair age");
+	window.push_menu_level(L"Maximum pair age filter");
 	window.add_menu_item(L"Unlimited", button_filters_age_any, checkmark_group_age);
 	window.add_menu_item(L"One year", button_filters_age_year, checkmark_group_age);
 	window.add_menu_item(L"One month", button_filters_age_month, checkmark_group_age);
 	window.add_menu_item(L"One week", button_filters_age_week, checkmark_group_age);
 	window.add_menu_item(L"One day", button_filters_age_day, checkmark_group_age);
+	window.pop_menu_level();
+	window.push_menu_level(L"Deletion rule");
+	window.add_menu_item(L"Move to recycle bin", button_settings_delete_recycle_bin, checkmark_group_deletion);
+	window.add_menu_item(L"Delete irreversibly", button_settings_delete_irreversibly, checkmark_group_deletion);
 	window.pop_menu_level();
 	window.pop_menu_level();
 
@@ -464,6 +469,7 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 
 	static enum class Scoring {visual, time, location, combined} scoring = Scoring::combined;
 	static enum class FolderFilter {any, same, different} folder_filter = FolderFilter::any;
+	static enum class DeletionRule {recycle, irreversible} deletion_rule = DeletionRule::recycle;
 	static auto maximum_pair_age = std::chrono::system_clock::duration::max();
 
 	if (scoring == Scoring::visual)
@@ -496,6 +502,13 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 		window.set_menu_item_checked(button_filters_age_week);
 	else if (maximum_pair_age == 24h)
 		window.set_menu_item_checked(button_filters_age_day);
+	else
+		assert(false);
+
+	if (deletion_rule == DeletionRule::recycle)
+		window.set_menu_item_checked(button_settings_delete_recycle_bin);
+	else if (deletion_rule == DeletionRule::irreversible)
+		window.set_menu_item_checked(button_settings_delete_irreversibly);
 	else
 		assert(false);
 
@@ -751,7 +764,7 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 					auto pane = e.button_id == button_delete_file_left ?
 						pane_image_left : pane_image_right;
 					if (window.get_image(pane)) {
-						window.get_image(pane)->delete_file();
+						window.get_image(pane)->delete_file(deletion_rule == DeletionRule::recycle);
 						window.set_dirty();
 						cursor_valid = false;
 						buttons_valid = false;
@@ -791,6 +804,8 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 			case button_filters_age_month:
 			case button_filters_age_week:
 			case button_filters_age_day:
+			case button_settings_delete_recycle_bin:
+			case button_settings_delete_irreversibly:
 				if (e.button_id == button_scoring_combined)
 					scoring = Scoring::combined;
 				else if (e.button_id == button_scoring_visual)
@@ -815,6 +830,10 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 					maximum_pair_age = 7*24h;
 				else if (e.button_id == button_filters_age_day)
 					maximum_pair_age = 24h;
+				else if (e.button_id == button_settings_delete_recycle_bin)
+					deletion_rule = DeletionRule::recycle;
+				else if (e.button_id == button_settings_delete_irreversibly)
+					deletion_rule = DeletionRule::irreversible;
 				else
 					assert(false);
 
