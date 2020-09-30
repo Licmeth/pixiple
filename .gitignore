@@ -5,4 +5,9 @@ vs_output/
 *.vc.opendb
 *.VC.db
 *.vcxproj.user
+*.obj
+*.pdb
+bin/pixiple.exe
+bin/pixiple.exe.manifest
+bin/pixiple.ilk
 debug_log.txt
