@@ -7,6 +7,8 @@
 #include "window.h"
 
 #include <iomanip>
+#include <iostream>
+#include <fstream>
 #include <iterator>
 #include <sstream>
 #include <vector>
@@ -354,12 +356,23 @@ void update_text(
 	}
 }
 
+void exportToCsv(const std::vector<ImagePair>& pairs) {
+	if(pairs.empty())
+		return;
+
+	std::ofstream csvFile;
+	csvFile.open("image_pairs.csv");
+	for(ImagePair pair : pairs)
+    	csvFile << pair.get_comma_seperated_line();
+	csvFile.close();
+}
+
 std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::vector<ImagePair>>& pair_categories) {
 	enum {
 		button_swap_images = 100, button_first_pair, button_previous_pair, button_next_pair,
 		button_open_folder_left, button_delete_file_left,
 		button_open_folder_right, button_delete_file_right,
-		button_file_new_scan, button_file_exit,
+		button_file_new_scan, button_file_export, button_file_exit,
 		button_scoring_visual, button_scoring_time, button_scoring_location, button_scoring_combined,
 		button_filters_folder_any, button_filters_folder_different, button_filters_folder_same,
 		button_filters_age_any, button_filters_age_year, button_filters_age_month, button_filters_age_week, button_filters_age_day,
@@ -431,6 +444,7 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 
 	window.push_menu_level(L"File");
 	window.add_menu_item(L"New scan...", button_file_new_scan);
+	window.add_menu_item(L"Export as *.csv", button_file_export);
 	window.add_menu_item(L"Exit", button_file_exit);
 	window.pop_menu_level();
 
@@ -788,6 +802,9 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 					if (!items.empty())
 						return items;
 				}
+				break;
+			case button_file_export:
+				exportToCsv(pairs);
 				break;
 			case button_file_exit:
 				PostQuitMessage(0);

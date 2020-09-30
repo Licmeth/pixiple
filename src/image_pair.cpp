@@ -108,3 +108,15 @@ std::wstring ImagePair::description() const {
 
 	return ss.str();
 }
+
+std::string ImagePair::get_comma_seperated_line() const {
+	const std::string seperator = "; ";
+	std::ostringstream ss;
+	
+	ss << image_1->path().string() << seperator << image_2->path().string() << seperator;
+	ss << std::setprecision(3) << distance;
+
+	ss << "\n";
+
+	return ss.str();
+}
