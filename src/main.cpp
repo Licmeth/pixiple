@@ -73,6 +73,7 @@ static void app() {
 
 	Window window{
 		window_title, {800, 600},
+		//todo: Add icon as ressource
 		//er = LoadIcon(er = GetModuleHandle(nullptr), MAKEINTRESOURCE(APP_ICON))};
 		er = (HICON) LoadImage(NULL, L"icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE)};
 

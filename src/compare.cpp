@@ -757,6 +757,7 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 						buttons_valid = false;
 					}
 				}
+				window.click_button(button_next_pair);
 				break;
 			case button_open_folder_left:
 			case button_open_folder_right:
