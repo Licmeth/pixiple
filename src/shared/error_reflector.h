@@ -49,6 +49,8 @@ public:
 	ErrorReflector(const long line, const char* const file) : line{line}, file{file} {
 	}
 
+	#pragma warning(push)
+	#pragma warning(disable: 4715) // warning C4715: Not all code paths return a value -> yes, they do. _DEBUG confuses the system
 	template<typename T>
 	const T& operator=(const T& t) const {
 		if (t)
@@ -59,7 +61,10 @@ public:
 		return t;
 		#endif
 	}
+	#pragma warning(pop)
 
+	#pragma warning(push)
+	#pragma warning(disable: 4715) // warning C4715: Not all code paths return a value -> yes, they do. _DEBUG confuses the system
 	const HRESULT& operator=(const HRESULT& hr) const {
 		if (SUCCEEDED(hr))
 			return hr;
@@ -69,6 +74,7 @@ public:
 		return hr;
 		#endif
 	}
+	#pragma warning(pop)
 
 	const HANDLE& operator=(const HANDLE& h) const {
 		if (h != nullptr && h != INVALID_HANDLE_VALUE)
