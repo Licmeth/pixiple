@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <sstream>
 
+const std::string seperator = ", ";
+
 ImagePair::ImagePair(
 	const std::shared_ptr<Image>& image_1,
 	const std::shared_ptr<Image>& image_2)
@@ -109,11 +111,19 @@ std::wstring ImagePair::description() const {
 	return ss.str();
 }
 
+
+std::string ImagePair::get_comma_seperated_header_line () const {
+	#define SEP << seperator <<
+	std::ostringstream ss;
+	ss << "filepath_1" SEP "filepath_2" SEP "fileSize_1" SEP "fileSize_2" SEP "distance" << "\n";
+	return ss.str();
+}
+
 std::string ImagePair::get_comma_seperated_line() const {
-	const std::string seperator = "; ";
 	std::ostringstream ss;
 	
 	ss << image_1->path().string() << seperator << image_2->path().string() << seperator;
+	ss << image_1->file_size() << seperator << image_2->file_size() << seperator;
 	ss << std::setprecision(3) << distance;
 
 	ss << "\n";

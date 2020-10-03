@@ -5,6 +5,7 @@
 #include "image_pair.h"
 #include "time.h"
 #include "window.h"
+#include "shared/browse_reason.h"
 
 #include <iomanip>
 #include <iostream>
@@ -15,6 +16,8 @@
 
 #include <shellapi.h>
 #include <windowsx.h>
+
+std::vector<ComPtr<IShellItem>> browse(HWND parent, browseReason reason);
 
 enum {
 	pane_pair_info, pane_pair_buttons,
@@ -356,12 +359,24 @@ void update_text(
 	}
 }
 
-void exportToCsv(const std::vector<ImagePair>& pairs) {
+void exportToCsv(const std::vector<ImagePair>& pairs, const ComPtr<IShellItem>& shell_item) {
 	if(pairs.empty())
 		return;
 
+	// check, if shell_item is a folder
+	SFGAOF attributes;
+	er = shell_item->GetAttributes(SFGAO_FOLDER, &attributes);
+	if(!(attributes&SFGAO_FOLDER))
+		return;
+
+	LPWSTR woutputPath;
+	er = shell_item->GetDisplayName(SIGDN_FILESYSPATH, &woutputPath);
+	std::wstring outputFilename(woutputPath);
+	outputFilename += L"image_pairs.csv";
+
 	std::ofstream csvFile;
-	csvFile.open("image_pairs.csv");
+	csvFile.open(outputFilename);
+	csvFile << pairs.begin()->get_comma_seperated_header_line();
 	for(ImagePair pair : pairs)
     	csvFile << pair.get_comma_seperated_line();
 	csvFile.close();
@@ -797,14 +812,17 @@ std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::v
 				break;
 			case button_file_new_scan:
 				{
-					std::vector<ComPtr<IShellItem>> browse(HWND parent);
-					auto items = browse(window.get_handle());
+					auto items = browse(window.get_handle(), browseReason::Scan);
 					if (!items.empty())
 						return items;
 				}
 				break;
 			case button_file_export:
-				exportToCsv(pairs);
+				{
+					auto items = browse(window.get_handle(), browseReason::Export);
+					if (!items.empty())
+						exportToCsv(pairs, items.back());;
+				}
 				break;
 			case button_file_exit:
 				PostQuitMessage(0);

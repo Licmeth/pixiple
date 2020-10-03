@@ -23,5 +23,6 @@ public:
 	std::chrono::system_clock::duration time_distance() const;
 	float location_distance() const;
 	std::wstring description() const;
+	std::string ImagePair::get_comma_seperated_header_line () const;
 	std::string ImagePair::get_comma_seperated_line() const;
 };

@@ -4,6 +4,7 @@
 #include "resource.h"
 #include "tests.h"
 #include "window.h"
+#include "shared/browse_reason.h"
 
 #include "shared/com.h"
 
@@ -27,14 +28,22 @@ std::vector<std::filesystem::path> scan(Window& window, const std::vector<ComPtr
 std::vector<std::vector<ImagePair>> process(Window& window, const std::vector<std::filesystem::path>& paths);
 std::vector<ComPtr<IShellItem>> compare(Window& window, const std::vector<std::vector<ImagePair>>& pair_categories);
 
-std::vector<ComPtr<IShellItem>> browse(HWND parent) {
+std::vector<ComPtr<IShellItem>> browse(HWND parent, browseReason reason) {
 	PIDLIST_ABSOLUTE pidlist;
 
-	BROWSEINFO bi{
-		parent, nullptr, nullptr,
-		L"Select a folder to scan for similar images (recursively, starting with the images and folders in the selected folder).",
-		BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON,
-		nullptr, 0, 0};
+	BROWSEINFO bi;
+	if(reason == browseReason::Scan)
+		bi = {
+			parent, nullptr, nullptr,
+			L"Select a folder to scan for similar images (recursively, starting with the images and folders in the selected folder).",
+			BIF_NEWDIALOGSTYLE | BIF_NONEWFOLDERBUTTON,
+			nullptr, 0, 0};
+	if(reason == browseReason::Export)
+		bi = {
+			parent, nullptr, nullptr,
+			L"Select a folder to save the export in.",
+			BIF_NEWDIALOGSTYLE,
+			nullptr, 0, 0};
 
 	#ifdef _DEBUG
 	pidlist = er = ILCreateFromPath(L"c:\\users\\");
@@ -85,7 +94,7 @@ static void app() {
 			items.push_back(si);
 	}
 	if (items.empty())
-		items = browse(window.get_handle());
+		items = browse(window.get_handle(), browseReason::Scan);
 
 	for (;;) {
 		std::vector<std::vector<ImagePair>> pair_categories{4};
